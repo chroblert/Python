@@ -22,6 +22,14 @@ def last():
     wb=load_workbook('cj.xlsx')
     sheet=wb.active
     sheet_z=wb.create_sheet('sheet_z')
+    sheet_z['A' + str(1)].value = '学号'
+    sheet_z['B' + str(1)].value = '姓名'
+    sheet_z['C' + str(1)].value = '总通过学分'
+    sheet_z['D' + str(1)].value = '未通过学分'
+    sheet_z['E' + str(1)].value = '总学分'
+    sheet_z['F' + str(1)].value = '平均学分绩点（含公共选修课）'
+    sheet_z['G' + str(1)].value = '平均学分绩点（不含公共选修课）'
+    sheet_z['H' + str(1)].value = '未通过课程'
     i=3
     while(sheet[convertToTitle(i)+str(2)].value != None):
         i=i+1
@@ -31,15 +39,28 @@ def last():
         i = i + 1
     row_end=i-1
     for j in range(3,row_end+1):#每一个同学的
+        sum_tgxf=0
+        sum_wtgxf = 0
         sum_xf=0
+        sum_xfjd=0
         wtgkc_list=list()
         for i in range(3,col_end+1):#每一个成绩print sheet[convertToTitle(i)+str(j)].value
+            if sheet[convertToTitle(i)+str(j)].value != None:
+                sum_xf=sum_xf + float(sheet[convertToTitle(i)+str(1)].value)
             if sheet[convertToTitle(i)+str(j)].value != None and float(sheet[convertToTitle(i)+str(j)].value) >=60:
-                sum_xf = sum_xf + float(sheet[convertToTitle(i)+str(1)].value)
+                sum_tgxf = sum_tgxf + float(sheet[convertToTitle(i)+str(1)].value)
+                sum_xfjd=sum_xfjd + (float(sheet[convertToTitle(i)+str(j)].value)-50)/10 * float(sheet[convertToTitle(i)+str(1)].value)
             elif sheet[convertToTitle(i)+str(j)].value != None and float(sheet[convertToTitle(i)+str(j)].value) <=60:
-                print i
-        print sheet['B'+str(j)].value,str(sum_xf)
-        sheet_z['A'+str(j-2)].value=sheet['A'+str(j)].value
-        sheet_z['C'+str(j-2)].value=str(sum_xf)
+                sum_wtgxf = sum_wtgxf + float(sheet[convertToTitle(i) + str(1)].value)
+        xfjd=sum_xfjd/sum_xf
+        print sheet['B'+str(j)].value,xfjd
+        print sum_xf,sum_tgxf,sum_wtgxf
+        sheet_z['A'+str(j-1)].value=sheet['A'+str(j)].value
+        sheet_z['B' + str(j - 1)].value = sheet['B' + str(j)].value
+        sheet_z['C'+str(j-1)].value=str(sum_tgxf)
+        sheet_z['D' + str(j - 1)].value = str(sum_wtgxf)
+        sheet_z['E' + str(j - 1)].value = str(sum_xf)
+        sheet_z['F' + str(j - 1)].value = str(xfjd)
+        sheet_z['G' + str(j - 1)].value = ''
     wb.save('cj.xlsx')
 last()

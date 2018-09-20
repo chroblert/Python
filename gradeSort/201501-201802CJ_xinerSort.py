@@ -1,6 +1,9 @@
 #!/usr/bin/python
 # _*_coding: utf-8 _*_
+"""
+created by Jerrybird
 
+"""
 import re
 import chardet
 import json

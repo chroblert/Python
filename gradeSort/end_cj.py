@@ -44,6 +44,7 @@ def last():
         sum_xf=0
         sum_xfjd=0
         wtgkc_list=list()
+        wtgkc_i=8
         for i in range(3,col_end+1):#每一个成绩print sheet[convertToTitle(i)+str(j)].value
             if sheet[convertToTitle(i)+str(j)].value != None:
                 sum_xf=sum_xf + float(sheet[convertToTitle(i)+str(1)].value)
@@ -52,6 +53,9 @@ def last():
                 sum_xfjd=sum_xfjd + (float(sheet[convertToTitle(i)+str(j)].value)-50)/10 * float(sheet[convertToTitle(i)+str(1)].value)
             elif sheet[convertToTitle(i)+str(j)].value != None and float(sheet[convertToTitle(i)+str(j)].value) <=60:
                 sum_wtgxf = sum_wtgxf + float(sheet[convertToTitle(i) + str(1)].value)
+                sheet_z[convertToTitle(wtgkc_i)+str(j-1)].value = sheet[convertToTitle(i)+str(2)].value
+                wtgkc_list.append(sheet[convertToTitle(i)+str(2)].value)
+                wtgkc_i = wtgkc_i + 1
         xfjd=sum_xfjd/sum_xf
         print sheet['B'+str(j)].value,xfjd
         print sum_xf,sum_tgxf,sum_wtgxf

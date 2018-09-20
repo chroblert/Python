@@ -60,8 +60,6 @@ def main():
             if sheet[convertToTitle(col_i) + str(row_i)].value == None or kc[2] > float(sheet[convertToTitle(col_i) + str(row_i)].value) :
                 sheet[convertToTitle(col_i) + str(row_i)].value=str(kc[2])
         row_i=row_i+1
-
-
     wb.save('cj.xlsx')
 
 main()

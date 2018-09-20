@@ -43,13 +43,11 @@ def main():
         sheet['B'+str(row_i)].value=s_dict[u'姓名']
         for kc in s_dict['grade_list']:
             print kc[0]
-            if kc[0].replace('*','').replace('#','').strip() not in kc_list:
-                sheet[convertToTitle(kccol_i) + str(2)].value = kc[0].replace('*','').replace('#','').strip()#录入课程名称
+            if kc[0] not in kc_list:
+                sheet[convertToTitle(kccol_i) + str(2)].value = kc[0]#录入课程名称
                 sheet[convertToTitle(kccol_i) + str(1)].value = kc[1]#录入学分
                 kccol_i = kccol_i + 1
-                kc_list.append(kc[0].replace('*','').replace('#','').strip())
-            else:
-                if kc[2]>=int(sheet[convertToTitle()])
+                kc_list.append(kc[0])
             col_i=kc_list.index(kc[0])+3
             sheet[convertToTitle(col_i) + str(row_i)].value=str(kc[2])
         row_i=row_i+1

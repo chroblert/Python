@@ -45,8 +45,10 @@ def main():
             #过滤掉*和#，去掉两头空格
             if '#' in kc[0]:
                 kc_mc=kc[0].replace('#','').strip()
-            if '*' in kc[0]:
+            elif '*' in kc[0]:
                 kc_mc=kc[0].replace('*','').strip()
+            else:
+                kc_mc=kc[0]
             print kc_mc
             if kc_mc not in kc_list:
                 sheet[convertToTitle(kccol_i) + str(2)].value = kc_mc#录入课程名称

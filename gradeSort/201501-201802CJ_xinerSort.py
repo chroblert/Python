@@ -11,8 +11,8 @@ from openpyxl import load_workbook
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-def htmlToJson():
-    with open('CJ_sort1.html','r') as f:
+def htmlToJson(in_file_name,out_file_name='CJ.json'):
+    with open(in_file_name,'r') as f:
         line1=f.read()
     type=chardet.detect(line1)
     data=line1.decode('GB2312',errors='ignore')
@@ -49,8 +49,7 @@ def htmlToJson():
         print "No match"
 
     #导出到json文件中
-    file_name="CJ.json"
-    with open(file_name,'w') as f:
+    with open(out_file_name,'w') as f:
         json.dump(CJ_list,f,ensure_ascii=False,indent=4)
 
 def convertToTitle(n):
@@ -65,9 +64,9 @@ def convertToTitle(n):
         n = (n - 1) / 26
     return result
 
-def jsonToExcel():
+def jsonToExcel(in_file_name='CJ.json',out_file_name='CJ.xlsx'):
     #读取json文件
-    with open('CJ.json','r') as f:
+    with open(in_file_name,'r') as f:
         CJ_list=json.load(f)
     #导出到excel表
     #创建Excel
@@ -105,10 +104,10 @@ def jsonToExcel():
             if sheet[convertToTitle(col_i) + str(row_i)].value == None or kc[2] > float(sheet[convertToTitle(col_i) + str(row_i)].value) :
                 sheet[convertToTitle(col_i) + str(row_i)].value=str(kc[2])
         row_i=row_i+1
-    wb.save('cj.xlsx')
+    wb.save(out_file_name)
 
-def excelToExcel():
-    wb=load_workbook('cj.xlsx')
+def excelToExcel(in_file_name='CJ.xlsx',out_file_name='CJ.xlsx'):
+    wb=load_workbook(in_file_name)
     sheet=wb.active
     sheet_z=wb.create_sheet('sheet_z')
     sheet_z['A' + str(1)].value = '学号'
@@ -155,9 +154,11 @@ def excelToExcel():
         sheet_z['E' + str(j - 1)].value = str(sum_xf)
         sheet_z['F' + str(j - 1)].value = str(xfjd)
         sheet_z['G' + str(j - 1)].value = ''
-    wb.save('cj.xlsx')
+    wb.save(out_file_name)
 
 def main():
-    htmlToJson()
+    htmlToJson('CJ_sort.html')
     jsonToExcel()
     excelToExcel()
+
+main()

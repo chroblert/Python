@@ -22,7 +22,6 @@ def convertToTitle(n):
 
 def main():
     #读取json文件
-    CJ_list=[]
     with open('CJ.json','r') as f:
         CJ_list=json.load(f)
     #导出到excel表
@@ -41,15 +40,23 @@ def main():
     for s_dict in CJ_list:
         sheet['A'+str(row_i)].value=s_dict[u'学号']
         sheet['B'+str(row_i)].value=s_dict[u'姓名']
+        kc_mc=''
         for kc in s_dict['grade_list']:
-            print kc[0]
-            if kc[0] not in kc_list:
-                sheet[convertToTitle(kccol_i) + str(2)].value = kc[0]#录入课程名称
+            #过滤掉*和#，去掉两头空格
+            if '#' in kc[0]:
+                kc_mc=kc[0].replace('#','').strip()
+            if '*' in kc[0]:
+                kc_mc=kc[0].replace('*','').strip()
+            print kc_mc
+            if kc_mc not in kc_list:
+                sheet[convertToTitle(kccol_i) + str(2)].value = kc_mc#录入课程名称
                 sheet[convertToTitle(kccol_i) + str(1)].value = kc[1]#录入学分
                 kccol_i = kccol_i + 1
-                kc_list.append(kc[0])
-            col_i=kc_list.index(kc[0])+3
-            sheet[convertToTitle(col_i) + str(row_i)].value=str(kc[2])
+                kc_list.append(kc_mc)
+            col_i=kc_list.index(kc_mc)+3
+            #读取单元格数字，若为空白则为0
+            if sheet[convertToTitle(col_i) + str(row_i)].value == None or kc[2] > float(sheet[convertToTitle(col_i) + str(row_i)].value) :
+                sheet[convertToTitle(col_i) + str(row_i)].value=str(kc[2])
         row_i=row_i+1
 
 

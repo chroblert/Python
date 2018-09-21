@@ -78,43 +78,52 @@ def jsonToExcel(in_file_name='CJ.json',out_file_name='CJ.xlsx'):
     sheet=wb.active
     sheet.title='CJ'
 
-
     row_i=1
-    col_i=1
-    kc_list=list()
     for s_dict in CJ_list:#每一个人的信息
-        kc_mc=''
+        # kc_mc=''
+        kc_list = list()
+        col_i = 1
+        xf=0
+        cfkccs_dict = dict()
         for kc in s_dict['grade_list']:#每一个人的课程成绩单
             #过滤掉*和#，去掉两头空格
+            bjggkc_list=list()
             if '#' in kc[0]:
                 kc_mc=kc[0].replace('#','').strip()
+                bjggkc_list.append(kc_mc)#不及格过的课程
             elif '*' in kc[0]:
                 kc_mc=kc[0].replace('*','').strip()
+                bjggkc_list.append(kc_mc)
             else:
-                kc_mc=kc[0]
-            print kc_mc
-            #第一行课程名称
-            sheet[convertToTitle(col_i + 2) + str(row_i)] = kc_mc
-            #第二行学分
-            sheet[convertToTitle(col_i + 2) + str(row_i + 1)] = kc[1]
-            #第三行成绩
-            sheet[convertToTitle(col_i + 2) + str(row_i+2)] = kc[2]
-            col_i =col_i +1
+                kc_mc = kc[0].strip()
+                if kc_mc not in bjggkc_list and kc_mc in kc_list:  # 该课程没有不及格过且之前已经录入一次，则该课程要么是刷绩点，要么是一样名称的体育
+                    print kc_mc
+                    temp=kc_mc
+                    kc_mc = kc_mc + str(cfkccs_dict[kc_mc])
+                    cfkccs_dict[temp] = cfkccs_dict[temp] + 1
+                    print
+
+            if kc_mc not in kc_list:
+                # 第一行课程名称
+                sheet[convertToTitle(col_i +2) + str(row_i)] = kc_mc
+                #第二行学分
+                sheet[convertToTitle(col_i +2) + str(row_i + 1)] = kc[1]
+                #第三行成绩
+                sheet[convertToTitle(col_i +2 ) + str(row_i+2)] = kc[2]
+                col_i = col_i + 1
+                kc_list.append(kc_mc)
+                cfkccs_dict.setdefault(kc_mc,1)
+                xf = xf + float(kc[1])
+            else:
+                print '####',kc_mc,kc[2],'####'
+                if float(kc[2]) > float(sheet[convertToTitle(kc_list.index(kc_mc)+3) + str(row_i + 2)].value):
+                    sheet[convertToTitle(kc_list.index(kc_mc)+3 ) + str(row_i +2 )].value = kc[2]
+        del kc_list[:]
+        print s_dict[u'姓名'],xf
         sheet['A'+str(row_i)]=s_dict[u'学号']
         sheet['B' + str(row_i)] = s_dict[u'姓名']
-
-        col_i =1
         row_i = row_i + 3
-        #     if kc_mc not in kc_list:
-        #         sheet[convertToTitle(kccol_i) + str(2)].value = kc_mc#录入课程名称
-        #         sheet[convertToTitle(kccol_i) + str(1)].value = kc[1]#录入学分
-        #         kccol_i = kccol_i + 1
-        #         kc_list.append(kc_mc)
-        #     col_i=kc_list.index(kc_mc)+3
-        #     #读取单元格数字，若为空白则为0
-        #     if sheet[convertToTitle(col_i) + str(row_i)].value == None or float(kc[2]) > float(sheet[convertToTitle(col_i) + str(row_i)].value) :
-        #         sheet[convertToTitle(col_i) + str(row_i)].value=str(kc[2])
-        # row_i=row_i+1
+
     wb.save(out_file_name)
 
 def excelToExcel(in_file_name='CJ.xlsx',out_file_name='CJ.xlsx'):
@@ -156,8 +165,8 @@ def excelToExcel(in_file_name='CJ.xlsx',out_file_name='CJ.xlsx'):
                 wtgkc_list.append(sheet[convertToTitle(i)+str(j)].value+'('+sheet[convertToTitle(i)+str(j+1)].value+')')
                 wtgkc_i = wtgkc_i + 1
         xfjd=sum_xfjd/sum_xf
-        print sheet['B'+str(j)].value,xfjd
-        print sum_xf,sum_tgxf,sum_wtgxf
+        # print sheet['B'+str(j)].value,xfjd
+        # print sum_xf,sum_tgxf,sum_wtgxf
 
         sheet_z['A' + str(j//3 + 2)].value = sheet['A' + str(j)].value
         sheet_z['B' + str(j//3 + 2)].value = sheet['B' + str(j)].value

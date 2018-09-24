@@ -97,11 +97,11 @@ def jsonToExcel(in_file_name='CJ.json',out_file_name='CJ.xlsx'):
             else:
                 kc_mc = kc[0].strip()
                 if kc_mc not in bjggkc_list and kc_mc in kc_list:  # 该课程没有不及格过且之前已经录入一次，则该课程要么是刷绩点，要么是一样名称的体育
-                    print kc_mc
+                    # print kc_mc
                     temp=kc_mc
                     kc_mc = kc_mc + str(cfkccs_dict[kc_mc])
                     cfkccs_dict[temp] = cfkccs_dict[temp] + 1
-                    print
+                    # print
 
             if kc_mc not in kc_list:
                 # 第一行课程名称
@@ -115,11 +115,11 @@ def jsonToExcel(in_file_name='CJ.json',out_file_name='CJ.xlsx'):
                 cfkccs_dict.setdefault(kc_mc,1)
                 xf = xf + float(kc[1])
             else:
-                print '####',kc_mc,kc[2],'####'
+                # print '####',kc_mc,kc[2],'####'
                 if float(kc[2]) > float(sheet[convertToTitle(kc_list.index(kc_mc)+3) + str(row_i + 2)].value):
                     sheet[convertToTitle(kc_list.index(kc_mc)+3 ) + str(row_i +2 )].value = kc[2]
         del kc_list[:]
-        print s_dict[u'姓名'],xf
+        # print s_dict[u'姓名'],xf
         sheet['A'+str(row_i)]=s_dict[u'学号']
         sheet['B' + str(row_i)] = s_dict[u'姓名']
         row_i = row_i + 3
@@ -150,15 +150,17 @@ def excelToExcel(in_file_name='CJ.xlsx',out_file_name='CJ.xlsx'):
         wtgkc_list=list()
         wtgkc_i=8
         k=3
+        print sheet['B'+str(j)].value,
         while(sheet[convertToTitle(k)+str(j)].value != None):
             k=k+1
         col_end=k-1#从3到end列都有数据
         for i in range(3,col_end+1):#每一个成绩print sheet[convertToTitle(i)+str(j)].value
             # if sheet[convertToTitle(i)+str(j)].value != None:
             sum_xf=sum_xf + float(sheet[convertToTitle(i)+str(j+1)].value)
-            if sheet[convertToTitle(i)+str(j+2)].value != None and float(sheet[convertToTitle(i)+str(j+2)].value) >=60:
+            if sheet[convertToTitle(i)+str(j+2)].value != None and float(sheet[convertToTitle(i)+str(j+2)].value) >= 60 :
                 sum_tgxf = sum_tgxf + float(sheet[convertToTitle(i)+str(j+1)].value)
                 sum_xfjd=sum_xfjd + ((float(sheet[convertToTitle(i)+str(j+2)].value)-50)/10) * float(sheet[convertToTitle(i)+str(j+1)].value)
+                print str(((float(sheet[convertToTitle(i)+str(j+2)].value)-50)/10) * float(sheet[convertToTitle(i)+str(j+1)].value)),
             elif sheet[convertToTitle(i)+str(j+2)].value != None and float(sheet[convertToTitle(i)+str(j+2)].value) < 60:
                 sum_wtgxf = sum_wtgxf + float(sheet[convertToTitle(i) + str(j+1)].value)
                 # sheet_z[convertToTitle(wtgkc_i)+str(j-1)].value = sheet[convertToTitle(i)+str(j)].value
@@ -167,6 +169,7 @@ def excelToExcel(in_file_name='CJ.xlsx',out_file_name='CJ.xlsx'):
         xfjd=sum_xfjd/sum_xf
         # print sheet['B'+str(j)].value,xfjd
         # print sum_xf,sum_tgxf,sum_wtgxf
+        print
 
         sheet_z['A' + str(j//3 + 2)].value = sheet['A' + str(j)].value
         sheet_z['B' + str(j//3 + 2)].value = sheet['B' + str(j)].value
